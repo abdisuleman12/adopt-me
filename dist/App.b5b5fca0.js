@@ -21653,8 +21653,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var petfinder = (0, _petfinderClient2.default)({
-  key: undefined,
-  secret: undefined
+  key: "a21e8f27b9e1834ac96e8372a0429bc9",
+  secret: "b571a93273c21bd9b55df22f9ef452a1"
 });
 
 var App = function (_React$Component) {
@@ -21716,7 +21716,12 @@ var App = function (_React$Component) {
             } else {
               breed = pet.breeds.breed;
             }
-            return _react2.default.createElement(_Pet2.default, { animal: pet.animal, name: pet.name, breed: breed });
+            return _react2.default.createElement(_Pet2.default, {
+              key: pet.id,
+              animal: pet.animal,
+              name: pet.name,
+              breed: breed
+            });
           })
         )
       );
@@ -21756,7 +21761,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '65307' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52214' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -21898,5 +21903,4 @@ function hmrAccept(bundle, id) {
   });
 }
 },{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","App.js"], null)
-//# sourceMappingURL=/App.b5b5fca0.mapjs"], null)
 //# sourceMappingURL=/App.b5b5fca0.map
