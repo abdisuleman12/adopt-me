@@ -23779,6 +23779,8 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _router = require("@reach/router");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23804,7 +23806,8 @@ var Pet = function (_React$Component) {
           animal = _props.animal,
           breed = _props.breed,
           media = _props.media,
-          location = _props.location;
+          location = _props.location,
+          id = _props.id;
 
 
       var photos = [];
@@ -23816,8 +23819,8 @@ var Pet = function (_React$Component) {
       }
 
       return _react2.default.createElement(
-        "div",
-        { className: "pet" },
+        _router.Link,
+        { to: "/details/" + id, className: "pet" },
         _react2.default.createElement(
           "div",
           { className: "image-container" },
@@ -23849,7 +23852,7 @@ var Pet = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Pet;
-},{"react":"../node_modules/react/index.js"}],"Results.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js"}],"Results.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23940,7 +23943,8 @@ var Results = function (_React$Component) {
             name: pet.name,
             breed: breed,
             media: pet.media,
-            location: pet.contact.city + ", " + pet.contact.state
+            location: pet.contact.city + ", " + pet.contact.state,
+            id: pet.id
           });
         })
       );
@@ -23964,6 +23968,12 @@ var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _petfinderClient = require("petfinder-client");
+
+var _petfinderClient2 = _interopRequireDefault(_petfinderClient);
+
+var _router = require("@reach/router");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23972,22 +23982,98 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var petfinder = (0, _petfinderClient2.default)({
+  key: "a21e8f27b9e1834ac96e8372a0429bc9",
+  secret: "b571a93273c21bd9b55df22f9ef452a1"
+});
+
 var Details = function (_React$Component) {
   _inherits(Details, _React$Component);
 
-  function Details() {
+  function Details(props) {
     _classCallCheck(this, Details);
 
-    return _possibleConstructorReturn(this, (Details.__proto__ || Object.getPrototypeOf(Details)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Details.__proto__ || Object.getPrototypeOf(Details)).call(this, props));
+
+    _this.state = {
+      loading: true
+    };
+    return _this;
   }
 
   _createClass(Details, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      petfinder.pet.get({
+        output: "full",
+        id: this.props.id
+      }).then(function (data) {
+        var pet = data.petfinder.pet;
+        var breed = void 0;
+        if (Array.isArray(data.petfinder.pet.breeds.breed)) {
+          breed = pet.breeds.breed.join(", ");
+        } else {
+          breed = pet.breeds.breed;
+        }
+
+        _this2.setState({
+          name: pet.name,
+          animal: pet.animal,
+          location: pet.contact.city + ", " + pet.contact.state,
+          description: pet.description,
+          media: pet.media,
+          breed: breed,
+          loading: false
+        });
+      }).catch(function () {
+        (0, _router.navigate)("/");
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      if (this.state.loading) {
+        return _react2.default.createElement(
+          "h1",
+          null,
+          "loading..."
+        );
+      }
+      var _state = this.state,
+          animal = _state.animal,
+          breed = _state.breed,
+          location = _state.location,
+          description = _state.description;
+
+
       return _react2.default.createElement(
-        "h1",
-        null,
-        "hi lol"
+        "div",
+        { className: "details" },
+        _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement(
+            "h1",
+            null,
+            name
+          ),
+          _react2.default.createElement(
+            "h2",
+            null,
+            animal,
+            " - ",
+            breed,
+            " - ",
+            location
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            description
+          )
+        )
       );
     }
   }]);
@@ -23996,7 +24082,7 @@ var Details = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Details;
-},{"react":"../node_modules/react/index.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","@reach/router":"../node_modules/@reach/router/es/index.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24041,9 +24127,13 @@ var App = function (_React$Component) {
         "div",
         null,
         _react2.default.createElement(
-          "h1",
+          "header",
           null,
-          "Adopt Me!"
+          _react2.default.createElement(
+            _router.Link,
+            { to: "/" },
+            "Adopt Me!"
+          )
         ),
         _react2.default.createElement(
           _router.Router,
@@ -24088,7 +24178,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64931' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59732' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
