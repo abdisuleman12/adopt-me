@@ -23955,7 +23955,106 @@ var Results = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Results;
-},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","./Pet":"Pet.js"}],"Details.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","./Pet":"Pet.js"}],"Carousel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Carousel = function (_React$Component) {
+  _inherits(Carousel, _React$Component);
+
+  function Carousel() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, Carousel);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Carousel.__proto__ || Object.getPrototypeOf(Carousel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      photos: [],
+      active: 0
+    }, _this.handleIndexClick = function (event) {
+      _this.setState({
+        active: +event.target.dataset.index
+      });
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(Carousel, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _state = this.state,
+          photos = _state.photos,
+          active = _state.active;
+
+
+      return _react2.default.createElement(
+        "div",
+        { className: "carousel" },
+        _react2.default.createElement("img", { src: photos[active].value, alt: "primary animal" }),
+        _react2.default.createElement(
+          "div",
+          { className: "carousel-smaller" },
+          photos.map(function (photo, index) {
+            return (
+              /* eslint-disable-next-line */
+              _react2.default.createElement("img", {
+                onClick: _this2.handleIndexClick,
+                key: photo.value,
+                "data-index": index,
+                src: photo.value,
+                className: index === active ? "active" : "",
+                alt: "animal thumbnail"
+              })
+            );
+          })
+        )
+      );
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(_ref2) {
+      var media = _ref2.media;
+
+      var photos = [];
+
+      if (media && media.photos && media.photos.photo) {
+        photos = media.photos.photo.filter(function (photo) {
+          return photo["@size"] == "pn";
+        });
+      }
+
+      return { photos: photos };
+    }
+  }]);
+
+  return Carousel;
+}(_react2.default.Component);
+
+exports.default = Carousel;
+},{"react":"../node_modules/react/index.js"}],"Details.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23974,6 +24073,10 @@ var _petfinderClient2 = _interopRequireDefault(_petfinderClient);
 
 var _router = require("@reach/router");
 
+var _Carousel = require("./Carousel");
+
+var _Carousel2 = _interopRequireDefault(_Carousel);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23990,15 +24093,20 @@ var petfinder = (0, _petfinderClient2.default)({
 var Details = function (_React$Component) {
   _inherits(Details, _React$Component);
 
-  function Details(props) {
+  function Details() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, Details);
 
-    var _this = _possibleConstructorReturn(this, (Details.__proto__ || Object.getPrototypeOf(Details)).call(this, props));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-    _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Details.__proto__ || Object.getPrototypeOf(Details)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       loading: true
-    };
-    return _this;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Details, [{
@@ -24045,12 +24153,14 @@ var Details = function (_React$Component) {
           animal = _state.animal,
           breed = _state.breed,
           location = _state.location,
-          description = _state.description;
+          description = _state.description,
+          media = _state.media;
 
 
       return _react2.default.createElement(
         "div",
         { className: "details" },
+        _react2.default.createElement(_Carousel2.default, { media: media }),
         _react2.default.createElement(
           "div",
           null,
@@ -24082,7 +24192,7 @@ var Details = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Details;
-},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","@reach/router":"../node_modules/@reach/router/es/index.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Carousel":"Carousel.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24178,7 +24288,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59732' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52331' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
