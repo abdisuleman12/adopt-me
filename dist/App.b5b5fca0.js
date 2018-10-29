@@ -24207,6 +24207,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _petfinderClient = require("petfinder-client");
 
+var _petfinderClient2 = _interopRequireDefault(_petfinderClient);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -24214,6 +24216,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var petfinder = (0, _petfinderClient2.default)({
+  key: "a21e8f27b9e1834ac96e8372a0429bc9",
+  secret: "b571a93273c21bd9b55df22f9ef452a1"
+});
 
 var SearchParams = function (_React$Component) {
   _inherits(SearchParams, _React$Component);
@@ -24232,7 +24239,8 @@ var SearchParams = function (_React$Component) {
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = SearchParams.__proto__ || Object.getPrototypeOf(SearchParams)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       location: "Minneapolis, MN",
       animal: "",
-      breed: ""
+      breed: "",
+      breeds: []
     }, _this.handleLocationChange = function (event) {
       _this.setState({
         location: event.target.value
@@ -24245,6 +24253,29 @@ var SearchParams = function (_React$Component) {
   }
 
   _createClass(SearchParams, [{
+    key: "getBreeds",
+    value: function getBreeds() {
+      var _this2 = this;
+
+      if (this.state.animal) {
+        petfinder.breed.list({ animal: this.state.animal }).then(function (data) {
+          if (data.petfinder && data.petfinder.breeds && Array.isArray(data.petfiner.breeds.breed)) {
+            _this2.setState({
+              breeds: data.petfinder.breeds.breed
+            });
+          } else {
+            _this2.setState({
+              breeds: []
+            });
+          }
+        });
+      } else {
+        this.setState({
+          breeds: []
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
@@ -24392,7 +24423,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54725' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50411' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
